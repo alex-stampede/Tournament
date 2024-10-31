@@ -1,135 +1,148 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const tbody = document.querySelector("#torneo tbody");
-  const rondasDiv = document.getElementById("rondas");
-  const agregarFilaBtn = document.getElementById("agregarFila");
-  const generarTorneoBtn = document.getElementById("generarTorneo");
-  const resetearBtn = document.getElementById("resetear");
-  const nombreGanadorElem = document.getElementById("nombreGanador");
-  let jugadorCount = 1;
-  let currentRound = [];
+let participants = [];
+let rounds = [];
+let currentRound = 0;
 
-  // Función para agregar una fila nueva
-  function agregarFila() {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td contenteditable="true">Jugador ${jugadorCount}</td><td>${jugadorCount}</td>`;
-    tbody.appendChild(tr);
-    jugadorCount++;
+function updateTitle() {
+  const titleInput = document.getElementById("titleInput").value.trim();
+  if (titleInput) {
+    document.getElementById("tournamentTitle").textContent = titleInput;
+  }
+}
+
+function addParticipant() {
+  const nameInput = document.getElementById("participantName");
+  const name = nameInput.value.trim();
+  
+  if (name) {
+    participants.push(name);
+    nameInput.value = "";
+    updateParticipantsTable();
+
+    // Habilitar el botón si el número de participantes es mayor o igual a 4 y divisible entre 2
+    document.getElementById("generateTournament").disabled = participants.length < 4 || participants.length % 2 !== 0;
+  }
+}
+
+function updateParticipantsTable() {
+  const tableBody = document.getElementById("participantsTable").getElementsByTagName("tbody")[0];
+  tableBody.innerHTML = "";
+
+  participants.forEach(participant => {
+    const row = tableBody.insertRow();
+    const cell = row.insertCell();
+    cell.textContent = participant;
+  });
+}
+
+function generateTournament() {
+  if (participants.length < 4 || participants.length % 2 !== 0) {
+    alert("Debe haber al menos 4 participantes y el número total debe ser divisible entre 2.");
+    return;
   }
 
-  // Crear una fila inicial de jugador con campos editables
-  agregarFila();
+  // Ordenar aleatoriamente los participantes
+  participants = shuffle(participants);
 
-  // Función para marcar jugador como eliminado en la tabla
-  function marcarEliminado(jugador) {
-    document.querySelectorAll("#torneo tbody tr").forEach((tr) => {
-      if (tr.cells[0].textContent.trim() === jugador) {
-        tr.classList.add("loser");
-      }
-    });
+  rounds = [];
+  currentRound = 0;
+  createRound(participants);
+  renderRounds();
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
+  return array;
+}
 
-  // Función para marcar jugador como ganador en la tabla
-  function marcarGanador(jugador) {
-    document.querySelectorAll("#torneo tbody tr").forEach((tr) => {
-      if (tr.cells[0].textContent.trim() === jugador) {
-        tr.classList.add("winner");
-      }
-    });
-  }
+function createRound(participants) {
+  const round = participants.map((participant, index, array) => 
+    index % 2 === 0 ? { player1: participant, player2: array[index + 1], winner: null } : null
+  ).filter(Boolean);
 
-  // Función para mezclar un array (algoritmo Fisher-Yates)
-  function mezclarArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
+  rounds.push(round);
+}
 
-  // Función para crear rondas del torneo
-  function crearRondas(jugadores) {
-    rondasDiv.innerHTML = ""; // Limpiar rondas anteriores
-    currentRound = jugadores;
-    let roundNumber = 1;
+function renderRounds() {
+  const roundsDiv = document.getElementById("tournamentRounds");
+  roundsDiv.innerHTML = "";
 
-    function generarRonda() {
-      const roundDiv = document.createElement("div");
-      roundDiv.className = "round";
-      roundDiv.innerHTML = `<h2>Ronda ${roundNumber}</h2>`;
-      const nextRound = [];
-      for (let i = 0; i < currentRound.length; i += 2) {
-        const matchDiv = document.createElement("div");
-        matchDiv.className = "match";
-        matchDiv.innerHTML = `
-                    <button class="player">${currentRound[i]}</button>
-                    <button class="player">${currentRound[i + 1]}</button>
-                `;
-        const playerButtons = matchDiv.querySelectorAll(".player");
-        playerButtons.forEach((button) => {
-          button.addEventListener("click", (e) => {
-            const winner = e.target;
-            const loser =
-              winner === playerButtons[0] ? playerButtons[1] : playerButtons[0];
-            winner.classList.add("winner");
-            loser.classList.add("loser");
-            winner.disabled = true;
-            loser.disabled = true;
-            nextRound.push(winner.textContent);
-            marcarEliminado(loser.textContent);
-          });
-        });
-        roundDiv.appendChild(matchDiv);
-      }
-      rondasDiv.appendChild(roundDiv);
+  rounds[currentRound].forEach((match, matchIndex) => {
+    const matchDiv = document.createElement("div");
+    matchDiv.classList.add("match");
 
-      const nextRoundButton = document.createElement("button");
-      nextRoundButton.textContent = `Generar Ronda ${roundNumber + 1}`;
-      nextRoundButton.addEventListener("click", () => {
-        if (nextRound.length === currentRound.length / 2) {
-          if (nextRound.length === 1) {
-            nombreGanadorElem.textContent = `¡El ganador es ${nextRound[0]}!`;
-            marcarGanador(nextRound[0]);
-          } else {
-            roundNumber++;
-            currentRound = nextRound;
-            rondasDiv.innerHTML = "";
-            generarRonda();
-          }
-        } else {
-          alert("Selecciona un ganador para cada partida.");
-        }
-      });
-      rondasDiv.appendChild(nextRoundButton);
-    }
+    const player1 = document.createElement("span");
+    player1.textContent = match.player1;
+    const winnerButton1 = document.createElement("button");
+    winnerButton1.textContent = "Ganador";
+    winnerButton1.onclick = () => selectWinner(matchIndex, match.player1);
 
-    mezclarArray(currentRound);
-    generarRonda();
-  }
+    const vs = document.createElement("span");
+    vs.textContent = " vs ";
 
-  // Evento para agregar una fila nueva
-  agregarFilaBtn.addEventListener("click", agregarFila);
+    const player2 = document.createElement("span");
+    player2.textContent = match.player2;
+    const winnerButton2 = document.createElement("button");
+    winnerButton2.textContent = "Ganador";
+    winnerButton2.onclick = () => selectWinner(matchIndex, match.player2);
 
-  // Evento para generar el torneo cuando se hace clic en el botón
-  generarTorneoBtn.addEventListener("click", () => {
-    const jugadores = [];
-    document.querySelectorAll("#torneo tbody tr").forEach((tr) => {
-      const jugador = tr.cells[0].textContent.trim();
-      if (jugador) {
-        jugadores.push(jugador);
-      }
-    });
-    if (jugadores.length % 2 === 0 && jugadores.length > 1) {
-      crearRondas(jugadores);
-    } else {
-      alert("Debe haber un número par de jugadores y al menos 2 jugadores.");
-    }
+    matchDiv.append(player1, winnerButton1, vs, player2, winnerButton2);
+    roundsDiv.appendChild(matchDiv);
   });
 
-  // Evento para resetear todos los datos
-  resetearBtn.addEventListener("click", () => {
-    tbody.innerHTML = "";
-    rondasDiv.innerHTML = "";
-    nombreGanadorElem.textContent = "";
-    jugadorCount = 1;
-    agregarFila();
-  });
-});
+  // Botón para avanzar de ronda
+  const nextRoundButton = document.createElement("button");
+  nextRoundButton.textContent = rounds[currentRound].length === 1 ? "Seleccionar Ganador" 
+                                     : rounds[currentRound + 1] && rounds[currentRound + 1].length === 1 ? "Generar Ronda Final" : "Siguiente Ronda";
+  nextRoundButton.id = "nextRoundButton";
+  nextRoundButton.style.display = "none";
+  nextRoundButton.onclick = () => nextRound();
+  roundsDiv.appendChild(nextRoundButton);
+}
+
+function selectWinner(matchIndex, winner) {
+  const match = rounds[currentRound][matchIndex];
+  match.winner = winner;
+
+  const matchDivs = document.getElementsByClassName("match");
+  const player1Div = matchDivs[matchIndex].children[0];
+  const player2Div = matchDivs[matchIndex].children[3];
+
+  // Aplicar clase de ganador y perdedor
+  if (winner === match.player1) {
+    player1Div.classList.add("winner");
+    player2Div.classList.add("loser");
+  } else {
+    player1Div.classList.add("loser");
+    player2Div.classList.add("winner");
+  }
+
+  checkRoundCompletion();
+}
+
+function checkRoundCompletion() {
+  const roundComplete = rounds[currentRound].every(match => match.winner);
+  const nextRoundButton = document.getElementById("nextRoundButton");
+  nextRoundButton.style.display = roundComplete ? "block" : "none";
+}
+
+function nextRound() {
+  const winners = rounds[currentRound].map(match => match.winner);
+  
+  if (winners.length === 1) {
+    displayWinner(winners[0]);
+  } else {
+    currentRound++;
+    createRound(winners);
+    renderRounds();
+  }
+}
+
+function displayWinner(winner) {
+  document.getElementById("tournamentRounds").innerHTML = "";
+  const winnerDiv = document.getElementById("winnerMessage");
+  winnerDiv.textContent = `¡${winner} es el ganador del torneo!`;
+  winnerDiv.style.display = "block";
+}
