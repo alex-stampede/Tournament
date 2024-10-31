@@ -4,14 +4,14 @@ body {
   background: linear-gradient(135deg, #89D4CF 0%, #6E45E2 100%);
   background-attachment: fixed;
   background-size: cover;
-  height: 100vh;
+  height: 100%;
   margin: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   color: white;
-  padding: 20px;
+  padding: 50px;
   box-sizing: border-box;
 }
 
