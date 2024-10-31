@@ -1,28 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Torneo 1v1</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <img src="ASPELAB BLANCO.png" />
-    <h1 id="nombreTorneo" contenteditable="true">Nombre del Torneo</h1>
-    <div id="nombreGanador"></div>
-    <table id="torneo">
-      <thead>
-        <tr>
-          <th>Nombre del Jugador</th>
-          <th>Número</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1 id="tournamentTitle">Título del Torneo</h1>
+    <input type="text" id="titleInput" placeholder="Escribe el título del torneo">
+    <button onclick="updateTitle()">Actualizar Título</button>
+
+    <input type="text" id="participantName" placeholder="Nombre del participante">
+    <button onclick="addParticipant()">Agregar Participante</button>
+    <button id="generateTournament" onclick="generateTournament()" disabled>Generar Torneo</button>
+
+    <table id="participantsTable">
+        <tbody></tbody>
     </table>
-    <button id="agregarFila">Agregar Jugador</button>
-    <button id="generarTorneo">Generar Torneo</button>
-    <button id="resetear">Resetear</button>
-    <div id="rondas"></div>
+
+    <div id="tournamentRounds"></div>
+    <div id="winnerMessage" style="display: none; font-size: 34px;"></div>
+
     <script src="script.js"></script>
-  </body>
+</body>
 </html>
