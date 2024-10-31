@@ -1,138 +1,135 @@
-img {
-  display: flex;
-  max-width: 30%;
-  margin: 50px 50px;
-}
-
 body {
   font-family: Arial, sans-serif;
   text-align: center;
-  background: linear-gradient(135deg, #89d4cf 0%, #1420c4 100%);
+  background: linear-gradient(135deg, #89D4CF 0%, #6E45E2 100%);
   background-attachment: fixed;
   background-size: cover;
-  min-height: 100vh;
+  height: 100vh;
   margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   color: white;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-h1,
-#nombreGanador {
+h1 {
   margin: 20px;
-  font-size: 2em;
+  font-size: 2.5em;
   font-weight: bold;
   color: #ffffff;
+  text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
 }
 
-#nombreGanador {
-  font-size: 2.5em;
+input[type="text"] {
+  padding: 10px;
+  width: 80%;
+  max-width: 500px;
+  font-size: 16px;
+  border: none;
+  border-radius: 30px;
+  margin: 15px 0;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+  outline: none;
+  transition: background 0.3s, transform 0.2s;
+}
+
+input[type="text"]:focus {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
 }
 
 table {
-  width: 50%;
+  width: 60%;
   margin: 20px auto;
   border-collapse: collapse;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 30px;
+  border-radius: 15px;
   overflow: hidden;
   backdrop-filter: blur(10px);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-th,
-td {
+th, td {
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 10px;
+  padding: 15px;
   text-align: center;
   color: #ffffff;
-  transition: background-color 0.5s, color 0.5s;
+  font-size: 1em;
 }
 
 th {
   background: rgba(255, 255, 255, 0.2);
 }
 
-td {
-  cursor: pointer;
+#winner {
+  background-color: lightgreen;
 }
 
-.loser {
-  background-color: lightcoral !important;
-  color: white !important;
-  text-decoration: line-through;
-  transition: text-decoration 1s;
-}
-
-.winner {
-  background-color: lightgreen !important;
-  color: white !important;
-}
-
-#rondas {
-  margin: 20px auto;
+#tournamentRounds {
+  margin: 30px auto;
   width: 80%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-}
-
-.round {
-  margin: 10px;
+  gap: 15px;
 }
 
 .match {
   margin: 5px;
-  padding: 10px;
+  padding: 15px;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 30px;
+  border-radius: 20px;
   text-align: center;
-  width: 150px;
+  width: 45%;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   color: #ffffff;
-  transition: background-color 0.5s, transform 0.3s;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 button {
   margin: 10px;
-  padding: 10px 20px;
+  padding: 12px 25px;
   font-size: 16px;
   border-radius: 30px;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
   backdrop-filter: blur(10px);
-  transition: background 0.3s, transform 0.3s;
+  transition: background 0.3s, transform 0.2s;
 }
 
 button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
 }
 
-.match button {
-  width: 100%;
-  margin: 5px 0;
-  background: rgba(
-    255,
-    255,
-    255,
-    0.1
-  ); /* Asegurarse que los botones tengan el mismo fondo */
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: background-color 0.5s, transform 0.3s;
+.winner {
+  color: lightgreen;
 }
 
-.match button:hover {
-  background: rgba(
-    255,
-    255,
-    255,
-    0.2
-  ); /* Asegurarse que los botones tengan el mismo fondo al pasar el ratón */
+.loser {
+  color: red;
 }
+
+.winner-button {
+  background: lightgreen;
+}
+
+.loser-button {
+  background: rgba(255, 0, 0, 0.5);
+}
+
+img {
+  display: block;
+  max-width: 30%;
+  margin: 50px auto;
+}
+
